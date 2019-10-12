@@ -30,32 +30,31 @@ ALLOWED_HOSTS = []
 # My settings
 LOGIN_URL = 'users:login'
 
-# Heroku Settings.
-import django_heroku
-django_heroku.settings(locals())
+# # Heroku Settings.
+# import django_heroku
+# django_heroku.settings(locals())
 
 # Application definition
 
 INSTALLED_APPS = [
-    # My Apps
-    'learning_logs',
-    'users',
-
-    # Third party apps.
-    'bootstrap4',
-
-    # Default django Apps
+     # Default django Apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+     # Third party apps.
+    'bootstrap4',
+
+    # My Apps
+    'learning_logs',
+    'users',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -133,16 +132,39 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "static"),
+# )
 
-STATIC_ROOT = os.path.join(BASE_DIR, "live-static-files", "static-root")
+# STATIC_ROOT = os.path.join(BASE_DIR, "live-static-files", "static-root")
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-#STATIC_ROOT = "/home/cfedeploy/webapps/cfehome_static_root/"
+# #STATIC_ROOT = "/home/cfedeploy/webapps/cfehome_static_root/"
 
-MEDIA_URL = "/media/"
+# MEDIA_URL = "/media/"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
+# MEDIA_ROOT = os.path.join(BASE_DIR, "live-static-files", "media-root")
+
+# Heroku settings
+cwd = os.getcwd()
+if cwd == '/app' or cwd[:4] == '/tmp':
+    import dj_database_url
+    DATABASES = {
+        'default': dj_database_url.config(default='postgres://localhost')
+    }
+
+    # Honor the 'X-Forwarded-Proto' header for request.is_secure().
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+    # Allow only Heroku to host a project.
+    ALLOWED_HOSTS = ['new-learning-log.herokuapp.com']
+
+    DEBUG = False
+
+    # Static asset configuration
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    STATIC_ROOT = 'staticfiles'
+    STATICFILES_DIR = [
+        os.path.join(BASE_DIR, 'static'),
+    ]
